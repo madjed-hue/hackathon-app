@@ -8,5 +8,9 @@ export default function DashboardPage() {
   if (userId === null) {
     return <div>Storing user...</div>;
   }
-  return <div>hello ai saas user {userId} </div>;
+  return (
+    <div>
+      <p>hello ai saas user {userId}</p>
+    </div>
+  );
 }

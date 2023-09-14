@@ -80,3 +80,11 @@ body,
     @apply bg-background text-foreground;
   }
 }
+
+.sidebar {
+  background-image: url("/sidebarbg.png");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* opacity: 0.7; */
+}
