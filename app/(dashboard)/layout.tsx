@@ -12,7 +12,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
           <Sidebar isPro={true} apiLimitCount={5} />
         </div>
       </div>
-      <main className="md:pl-72 z-[80]">
+      <main className="md:ml-72 z-[80] h-full main_dashboard relative">
         <Navbar />
         {children}
       </main>

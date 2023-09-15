@@ -9,7 +9,7 @@ const Navbar = async () => {
   //   const isPro = await checkSubscription();
 
   return (
-    <div className="flex items-center p-4">
+    <div className="flex items-center p-4 z-50 relative">
       <MobileSidebar isPro={true} apiLimitCount={5} />
       <div className="flex w-full justify-end">
         <UserButton afterSignOutUrl="/" />

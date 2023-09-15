@@ -81,10 +81,16 @@ body,
   }
 }
 
-.sidebar {
-  background-image: url("/sidebarbg.png");
+.sidebar,
+.main_dashboard {
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
   /* opacity: 0.7; */
+}
+.sidebar {
+  background-image: url("/sidebarbg.png");
+}
+.main_dashboard {
+  background-image: url("/sidebarbg.png");
 }

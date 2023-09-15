@@ -29,14 +29,14 @@ const routes = [
   {
     label: "Chat Generation",
     icon: MessageSquare,
-    href: "/conversation",
+    href: "/chat",
     color: "text-emerald-500",
   },
   {
     label: "Pictures Generation",
     icon: ImageIcon,
     color: "text-blue-400",
-    href: "/image",
+    href: "/picture",
   },
   {
     label: "Code Generation",
@@ -79,9 +79,9 @@ export const Sidebar = ({
               key={route.href}
               href={route.href}
               className={cn(
-                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-white/10 rounded-lg transition",
+                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-white/30 rounded-lg transition",
                 pathname === route.href
-                  ? "text-white bg-white/10"
+                  ? "text-white bg-white/30"
                   : "text-zinc-400"
               )}
             >
