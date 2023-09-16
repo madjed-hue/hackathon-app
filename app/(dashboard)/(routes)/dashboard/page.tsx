@@ -7,18 +7,12 @@ import { constants } from "@/data";
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 
-// import useStoreUserEffect from "@/hooks/useStoreUserEffect";
-
 export default function DashboardPage() {
   const router = useRouter();
 
-  // if (userId === null) {
-  //   return <div>Storing user...</div>;
-  // }
   return (
-    <div className="mt-40">
-      <div className="absolute top-0 left-0 w-full h-full bg-gray-900/80 z-10" />
-      <div className="mb-8 space-y-4 z-50 relative">
+    <div className="mt-40 z-50 relative">
+      <div className="mb-8 space-y-4 relative">
         <h2 className="text-2xl md:text-4xl font-bold text-center">
           Discover the potential of AI.
         </h2>
@@ -27,7 +21,7 @@ export default function DashboardPage() {
           capabilities of AI
         </p>
       </div>
-      <div className="px-4 md:px-20 lg:px-0 space-y-4 md:flex items-center justify-evenly w-full z-50 relative">
+      <div className="px-4 md:px-20 lg:px-0 space-y-4 md:flex items-center justify-evenly w-full">
         {constants.map((item) => (
           <Card
             onClick={() => router.push(item.href)}

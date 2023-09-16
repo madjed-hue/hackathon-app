@@ -14,7 +14,7 @@ export const constants = [
     label: "Picture Generation",
     icon: ImageIcon,
     color: "text-blue-400",
-    bgColor: "bg-blue-400/10",
+    bgColor: "bg-blue-500/10",
     href: "/picture",
   },
   {

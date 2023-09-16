@@ -61,9 +61,7 @@ export const Sidebar = ({
   const pathname = usePathname();
 
   return (
-    <div className="py-8 flex flex-col h-full text-white">
-      <div className="sidebar absolute top-0 left-0 w-full h-full" />
-      <div className="absolute top-0 left-0 w-full h-full bg-gray-900/80 z-10" />
+    <div className="py-8 flex flex-col h-full text-gray-800 relative z-[110]">
       <div className="px-3 py-2 flex-1 z-[80] h-full">
         <Link href="/dashboard" className="flex items-center pl-3 mb-14">
           <div className="relative h-8 w-8 mr-4">
@@ -79,10 +77,10 @@ export const Sidebar = ({
               key={route.href}
               href={route.href}
               className={cn(
-                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-white/30 rounded-lg transition",
+                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-balck hover:bg-black/20 rounded-lg transition",
                 pathname === route.href
-                  ? "text-white bg-white/30"
-                  : "text-zinc-400"
+                  ? "text-black bg-black/20"
+                  : "text-zinc-500"
               )}
             >
               <div className="flex items-center flex-1">
