@@ -11,4 +11,10 @@ export default defineSchema({
     email: v.string(),
     pictureUrl: v.string(),
   }).index("email", ["email"]),
+
+  pictures: defineTable({
+    prompt: v.string(),
+    num: v.string(),
+    resolution: v.any(),
+  }),
 });

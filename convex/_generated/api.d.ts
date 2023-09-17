@@ -14,6 +14,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as images from "../images";
 import type * as messages from "../messages";
 import type * as users from "../users";
 
@@ -26,6 +27,7 @@ import type * as users from "../users";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  images: typeof images;
   messages: typeof messages;
   users: typeof users;
 }>;

@@ -1,24 +1,28 @@
 "use client";
 
-import { MessageSquare } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { Code } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+import ReactMarkdown from "react-markdown";
 import { useRouter } from "next/navigation";
 
+import { BotAvatar } from "@/components/bot-avatar";
 import { Heading } from "@/components/heading";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAction, useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { Empty } from "@/components/ui/empty";
-import { Loader } from "@/components/loader";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
+import { Loader } from "@/components/loader";
 import { UserAvatar } from "@/components/user-avatar";
-import { BotAvatar } from "@/components/bot-avatar";
-import toast from "react-hot-toast";
+import { Empty } from "@/components/ui/empty";
+import { useAction } from "convex/react";
+import { api } from "@/convex/_generated/api";
+// import { useProModal } from "@/hooks/use-pro-modal";
+
+// import { formSchema } from "./constants";
 
 const formSchema = z.object({
   text: z.string().min(1, {
@@ -32,7 +36,7 @@ type MessageProps = {
   role?: string | "user";
 };
 
-const ChatPage = () => {
+const CodePage = () => {
   const router = useRouter();
   // const proModal = useProModal();
   const [messages, setMessages] = useState<MessageProps[]>([]);
@@ -88,21 +92,22 @@ const ChatPage = () => {
   if (!hasMounted) {
     return null;
   }
+
   return (
     <div className="relative z-50">
       <Heading
-        title="Chat"
-        description="Experience the most advanced chat AI."
-        icon={MessageSquare}
-        iconColor="text-emerald-500"
-        bgColor="bg-emerald-500/10"
+        title="Code Generation"
+        description="Generate code using descriptive text."
+        icon={Code}
+        iconColor="text-fuchsia-700"
+        bgColor="bg-fuchsia-700/10"
       />
       <div className="px-4 lg:px-8">
         <div>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className=" rounded-lg border w-full p-4 px-3 md:px-6 focus-within:shadow-sm grid grid-cols-12 gap-2 bg-white"
+              className="rounded-lg border w-full p-4 px-3 md:px-6 focus-within:shadow-sm grid grid-cols-12 gap-2 bg-white"
             >
               <FormField
                 name="text"
@@ -112,7 +117,7 @@ const ChatPage = () => {
                       <Input
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading}
-                        placeholder="what is the multiplication result of 2x2?"
+                        placeholder="Simple toggle button using react hooks."
                         {...field}
                       />
                     </FormControl>
@@ -154,7 +159,24 @@ const ChatPage = () => {
                 {message.role === "user" ? (
                   <p className="text-sm">{message.text}</p>
                 ) : (
-                  <p className="text-sm">{message.response}</p>
+                  <ReactMarkdown
+                    components={{
+                      pre: ({ node, ...props }) => (
+                        <div className="overflow-auto w-full my-2 bg-black/10 p-2 rounded-lg">
+                          <pre {...props} />
+                        </div>
+                      ),
+                      code: ({ node, ...props }) => (
+                        <code
+                          className="bg-black/10 rounded-lg p-1"
+                          {...props}
+                        />
+                      ),
+                    }}
+                    className="text-sm overflow-hidden leading-7"
+                  >
+                    {message.response || ""}
+                  </ReactMarkdown>
                 )}
               </div>
             ))}
@@ -165,4 +187,4 @@ const ChatPage = () => {
   );
 };
 
-export default ChatPage;
+export default CodePage;
