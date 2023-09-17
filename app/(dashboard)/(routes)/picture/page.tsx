@@ -26,16 +26,21 @@ import {
 // import { useProModal } from "@/hooks/use-pro-modal";
 
 import { amountOptions, formSchema, resolutionOptions } from "./constants";
-import { useAction } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { sendPictureMessage } from "@/convex/images";
-// import { sendPictureMessage } from "@/convex/messages";
+import { useUser } from "@clerk/clerk-react";
 
 const PicturePage = () => {
   //   const proModal = useProModal();
   const router = useRouter();
   const [photos, setPhotos] = useState<(string | undefined)[]>([]);
   const [hasMounted, setHasMounted] = useState(false);
+  const { user } = useUser();
+
+  const args = {
+    userId: user?.id ?? "",
+    count: 1,
+  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,13 +55,28 @@ const PicturePage = () => {
 
   const sendMessage = useAction(api.images.sendPictureMessage);
 
+  const increaseApiLimit = useMutation(api.userApiLimit.increaseUserApiLimit);
+
+  const checkApiLimit = useQuery(api.userApiLimit.checkUserApiLimit);
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      if (!user) {
+        return;
+      }
+
+      const freeTrial = await checkApiLimit;
+
+      if (!freeTrial) {
+        return;
+      }
+
       setPhotos([]);
 
       const response = await sendMessage(values);
       const urls = response.data.map((image) => image.url);
       setPhotos(urls);
+      await increaseApiLimit(args);
     } catch (error: any) {
       console.log(error);
 

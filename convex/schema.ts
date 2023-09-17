@@ -17,4 +17,9 @@ export default defineSchema({
     num: v.string(),
     resolution: v.any(),
   }),
+  userApiLimit: defineTable({
+    userId: v.string(),
+    count: v.number(),
+    tokenIdentifier: v.string(),
+  }).index("tokenIdentifier", ["tokenIdentifier"]),
 });

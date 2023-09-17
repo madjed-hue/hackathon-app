@@ -18,8 +18,9 @@ import { cn } from "@/lib/utils";
 import { Loader } from "@/components/loader";
 import { UserAvatar } from "@/components/user-avatar";
 import { Empty } from "@/components/ui/empty";
-import { useAction } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useUser } from "@clerk/clerk-react";
 // import { useProModal } from "@/hooks/use-pro-modal";
 
 // import { formSchema } from "./constants";
@@ -41,6 +42,12 @@ const CodePage = () => {
   // const proModal = useProModal();
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [hasMounted, setHasMounted] = useState(false);
+  const { user } = useUser();
+
+  const args = {
+    userId: user?.id ?? "",
+    count: 1,
+  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,8 +60,21 @@ const CodePage = () => {
 
   const sendMessage = useAction(api.messages.sendMessage);
 
+  const increaseApiLimit = useMutation(api.userApiLimit.increaseUserApiLimit);
+
+  const checkApiLimit = useQuery(api.userApiLimit.checkUserApiLimit);
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      if (!user) {
+        return;
+      }
+
+      const freeTrial = await checkApiLimit;
+
+      if (!freeTrial) {
+        return;
+      }
       const response = await sendMessage({ ...values });
       const aiMessage = {
         text: values.text,
@@ -71,6 +91,8 @@ const CodePage = () => {
       const allMessages = [...newMessages, userMessage];
 
       setMessages(allMessages);
+
+      await increaseApiLimit(args);
 
       form.reset();
     } catch (error: any) {

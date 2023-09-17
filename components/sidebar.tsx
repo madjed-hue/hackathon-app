@@ -15,7 +15,9 @@ import {
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
-// import { FreeCounter } from "@/components/free-counter";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { FreeCounter } from "@/components/free-counter";
 
 const poppins = Montserrat({ weight: "600", subsets: ["latin"] });
 
@@ -51,14 +53,10 @@ const routes = [
   },
 ];
 
-export const Sidebar = ({
-  apiLimitCount = 0,
-  isPro = false,
-}: {
-  apiLimitCount: number;
-  isPro: boolean;
-}) => {
+export const Sidebar = ({ isPro = false }: { isPro: boolean }) => {
   const pathname = usePathname();
+
+  const apiLimitCount = useQuery(api.userApiLimit.getApiLimitCount);
 
   return (
     <div className="py-8 flex flex-col h-full text-gray-800 relative z-[110]">
@@ -91,7 +89,7 @@ export const Sidebar = ({
           ))}
         </div>
       </div>
-      {/* <FreeCounter apiLimitCount={apiLimitCount} isPro={isPro} /> */}
+      <FreeCounter apiLimitCount={apiLimitCount} isPro={isPro} />
     </div>
   );
 };

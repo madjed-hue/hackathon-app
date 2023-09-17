@@ -16,6 +16,7 @@ import type {
 } from "convex/server";
 import type * as images from "../images";
 import type * as messages from "../messages";
+import type * as userApiLimit from "../userApiLimit";
 import type * as users from "../users";
 
 /**
@@ -29,6 +30,7 @@ import type * as users from "../users";
 declare const fullApi: ApiFromModules<{
   images: typeof images;
   messages: typeof messages;
+  userApiLimit: typeof userApiLimit;
   users: typeof users;
 }>;
 export declare const api: FilterApi<

@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAction, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Empty } from "@/components/ui/empty";
 import { Loader } from "@/components/loader";
@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { UserAvatar } from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
 import toast from "react-hot-toast";
+import { useUser } from "@clerk/clerk-react";
 
 const formSchema = z.object({
   text: z.string().min(1, {
@@ -37,6 +38,12 @@ const ChatPage = () => {
   // const proModal = useProModal();
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [hasMounted, setHasMounted] = useState(false);
+  const { user } = useUser();
+
+  const args = {
+    userId: user?.id ?? "",
+    count: 1,
+  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,9 +55,22 @@ const ChatPage = () => {
   const isLoading = form.formState.isSubmitting;
 
   const sendMessage = useAction(api.messages.sendMessage);
+  const increaseApiLimit = useMutation(api.userApiLimit.increaseUserApiLimit);
+
+  const checkApiLimit = useQuery(api.userApiLimit.checkUserApiLimit);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      if (!user) {
+        return;
+      }
+
+      const freeTrial = await checkApiLimit;
+
+      if (!freeTrial) {
+        return;
+      }
+
       const response = await sendMessage({ ...values });
       const aiMessage = {
         text: values.text,
@@ -67,6 +87,8 @@ const ChatPage = () => {
       const allMessages = [...newMessages, userMessage];
 
       setMessages(allMessages);
+
+      await increaseApiLimit(args);
 
       form.reset();
     } catch (error: any) {
@@ -88,6 +110,7 @@ const ChatPage = () => {
   if (!hasMounted) {
     return null;
   }
+
   return (
     <div className="relative z-50">
       <Heading
