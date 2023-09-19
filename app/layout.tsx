@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import ConvexClientProvider from "./ConvexClientProvider";
 import { ToasterProvider } from "@/components/toaster-provider";
+import { ModalProvider } from "@/components/modal-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +21,7 @@ export default function RootLayout({
     <ConvexClientProvider>
       <html lang="en">
         <body className={inter.className} suppressHydrationWarning={true}>
+          <ModalProvider />
           <ToasterProvider />
           {children}
         </body>

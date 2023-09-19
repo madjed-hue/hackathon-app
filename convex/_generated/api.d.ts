@@ -14,8 +14,12 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as domain from "../domain";
+import type * as http from "../http";
 import type * as images from "../images";
 import type * as messages from "../messages";
+import type * as payments from "../payments";
+import type * as stripe from "../stripe";
 import type * as userApiLimit from "../userApiLimit";
 import type * as users from "../users";
 
@@ -28,8 +32,12 @@ import type * as users from "../users";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  domain: typeof domain;
+  http: typeof http;
   images: typeof images;
   messages: typeof messages;
+  payments: typeof payments;
+  stripe: typeof stripe;
   userApiLimit: typeof userApiLimit;
   users: typeof users;
 }>;

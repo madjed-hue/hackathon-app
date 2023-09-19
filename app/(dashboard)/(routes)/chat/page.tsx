@@ -20,6 +20,8 @@ import { UserAvatar } from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
 import toast from "react-hot-toast";
 import { useUser } from "@clerk/clerk-react";
+import { useProModal } from "@/hooks/use-pro-modal";
+import { ConvexError } from "convex/values";
 
 const formSchema = z.object({
   text: z.string().min(1, {
@@ -35,7 +37,7 @@ type MessageProps = {
 
 const ChatPage = () => {
   const router = useRouter();
-  // const proModal = useProModal();
+  const proModal = useProModal();
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [hasMounted, setHasMounted] = useState(false);
   const { user } = useUser();
@@ -68,6 +70,7 @@ const ChatPage = () => {
       const freeTrial = await checkApiLimit;
 
       if (!freeTrial) {
+        proModal.onOpen();
         return;
       }
 
@@ -93,11 +96,7 @@ const ChatPage = () => {
       form.reset();
     } catch (error: any) {
       console.log(error);
-      // if (error?.response?.status === 403) {
-      //   proModal.onOpen();
-      // } else {
       toast.error("Something went wrong.");
-      // }
     } finally {
       router.refresh();
     }

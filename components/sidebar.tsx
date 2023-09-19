@@ -8,9 +8,7 @@ import {
   ImageIcon,
   LayoutDashboard,
   MessageSquare,
-  Music,
   Settings,
-  VideoIcon,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -53,10 +51,17 @@ const routes = [
   },
 ];
 
-export const Sidebar = ({ isPro = false }: { isPro: boolean }) => {
+const DAY_IN_MS = 86_400_000;
+
+export const Sidebar = () => {
   const pathname = usePathname();
 
   const apiLimitCount = useQuery(api.userApiLimit.getApiLimitCount);
+
+  const data = useQuery(api.userApiLimit.checkSubscription)!;
+
+  const isPro =
+    new Date(data?.stripeCurrentPeriodEnd!)?.getTime() + DAY_IN_MS > Date.now();
 
   return (
     <div className="py-8 flex flex-col h-full text-gray-800 relative z-[110]">

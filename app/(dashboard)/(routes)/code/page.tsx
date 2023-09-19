@@ -21,7 +21,7 @@ import { Empty } from "@/components/ui/empty";
 import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useUser } from "@clerk/clerk-react";
-// import { useProModal } from "@/hooks/use-pro-modal";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 // import { formSchema } from "./constants";
 
@@ -39,7 +39,7 @@ type MessageProps = {
 
 const CodePage = () => {
   const router = useRouter();
-  // const proModal = useProModal();
+  const proModal = useProModal();
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [hasMounted, setHasMounted] = useState(false);
   const { user } = useUser();
@@ -73,6 +73,7 @@ const CodePage = () => {
       const freeTrial = await checkApiLimit;
 
       if (!freeTrial) {
+        proModal.onOpen();
         return;
       }
       const response = await sendMessage({ ...values });

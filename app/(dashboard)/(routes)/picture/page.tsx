@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// import { useProModal } from "@/hooks/use-pro-modal";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 import { amountOptions, formSchema, resolutionOptions } from "./constants";
 import { useAction, useMutation, useQuery } from "convex/react";
@@ -31,7 +31,7 @@ import { api } from "@/convex/_generated/api";
 import { useUser } from "@clerk/clerk-react";
 
 const PicturePage = () => {
-  //   const proModal = useProModal();
+  const proModal = useProModal();
   const router = useRouter();
   const [photos, setPhotos] = useState<(string | undefined)[]>([]);
   const [hasMounted, setHasMounted] = useState(false);
@@ -68,6 +68,7 @@ const PicturePage = () => {
       const freeTrial = await checkApiLimit;
 
       if (!freeTrial) {
+        proModal.onOpen();
         return;
       }
 

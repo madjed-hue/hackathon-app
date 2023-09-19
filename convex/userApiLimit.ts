@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
 const MAX_FREE_COUNTS = 5;
+// const DAY_IN_MS = 86_400_000;
 
 export const increaseUserApiLimit = mutation({
   args: { userId: v.string(), count: v.number() },
@@ -36,13 +37,10 @@ export const checkUserApiLimit = query({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
 
-    // console.log(identity);
-
     if (!identity) {
       // throw new Error("Unauthenticated user!");
       console.log("Unauthenticated user!");
     }
-    console.log("authenticated successfully");
 
     const userApiLimit = await ctx.db
       .query("userApiLimit")
@@ -78,5 +76,28 @@ export const getApiLimitCount = query({
     }
 
     return userApiLimit.count;
+  },
+});
+
+export const checkSubscription = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (identity === null) {
+      // throw new Error("Unauthenticated user!");
+      console.log("Unauthenticated user!");
+    }
+
+    console.log(identity);
+
+    const userSubscription = await ctx.db
+      .query("payments")
+      .withIndex("userId", (q) => q.eq("userId", identity?.subject!))
+      .unique();
+
+    if (!userSubscription) {
+      return;
+    }
+
+    return userSubscription;
   },
 });
