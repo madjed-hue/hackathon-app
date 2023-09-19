@@ -101,8 +101,6 @@ export const userSubsecriptionQuery = internalQuery({
       console.log("Unauthenticated user!");
     }
 
-    console.log(identity);
-
     const userSubscription = await ctx.db
       .query("payments")
       .withIndex("userId", (q) => q.eq("userId", identity?.subject!))

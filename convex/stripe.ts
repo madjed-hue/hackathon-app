@@ -1,18 +1,12 @@
 "use node";
 
 import { v } from "convex/values";
-import {
-  action,
-  internalAction,
-  internalQuery,
-  query,
-} from "./_generated/server";
+import { action, internalAction } from "./_generated/server";
 import Stripe from "stripe";
-import { api, internal } from "./_generated/api";
+import { internal } from "./_generated/api";
 
 export const pay = action({
   args: { userId: v.string() },
-  // args: { signature: v.string(), body: v.string() },
   handler: async ({ runMutation, runQuery }, { userId }) => {
     const domain = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
     const stripe = new Stripe(process.env.STRIPE_API_KEY!, {
@@ -93,7 +87,6 @@ export const fulfill = internalAction({
           stripeCustomerId: subscription.customer as string,
           stripeSubscriptionId: subscription.id,
           stripePriceId: subscription.items.data[0].price.id,
-          // userId: ""
         });
       }
 
