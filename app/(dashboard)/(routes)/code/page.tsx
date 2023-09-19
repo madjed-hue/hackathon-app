@@ -37,6 +37,8 @@ type MessageProps = {
   role?: string | "user";
 };
 
+const DAY_IN_MS = 86_400_000;
+
 const CodePage = () => {
   const router = useRouter();
   const proModal = useProModal();
@@ -63,6 +65,10 @@ const CodePage = () => {
   const increaseApiLimit = useMutation(api.userApiLimit.increaseUserApiLimit);
 
   const checkApiLimit = useQuery(api.userApiLimit.checkUserApiLimit);
+  const data = useQuery(api.userApiLimit.checkSubscription)!;
+
+  const isPro =
+    new Date(data?.stripeCurrentPeriodEnd!)?.getTime() + DAY_IN_MS > Date.now();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -72,7 +78,7 @@ const CodePage = () => {
 
       const freeTrial = await checkApiLimit;
 
-      if (!freeTrial) {
+      if (!freeTrial && !isPro) {
         proModal.onOpen();
         return;
       }
@@ -93,16 +99,14 @@ const CodePage = () => {
 
       setMessages(allMessages);
 
-      await increaseApiLimit(args);
+      if (!isPro) {
+        await increaseApiLimit(args);
+      }
 
       form.reset();
     } catch (error: any) {
       console.log(error);
-      // if (error?.response?.status === 403) {
-      //   proModal.onOpen();
-      // } else {
       toast.error("Something went wrong.");
-      // }
     } finally {
       router.refresh();
     }

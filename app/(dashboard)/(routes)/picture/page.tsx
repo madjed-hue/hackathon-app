@@ -30,6 +30,8 @@ import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useUser } from "@clerk/clerk-react";
 
+const DAY_IN_MS = 86_400_000;
+
 const PicturePage = () => {
   const proModal = useProModal();
   const router = useRouter();
@@ -58,6 +60,10 @@ const PicturePage = () => {
   const increaseApiLimit = useMutation(api.userApiLimit.increaseUserApiLimit);
 
   const checkApiLimit = useQuery(api.userApiLimit.checkUserApiLimit);
+  const data = useQuery(api.userApiLimit.checkSubscription)!;
+
+  const isPro =
+    new Date(data?.stripeCurrentPeriodEnd!)?.getTime() + DAY_IN_MS > Date.now();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -67,7 +73,7 @@ const PicturePage = () => {
 
       const freeTrial = await checkApiLimit;
 
-      if (!freeTrial) {
+      if (!freeTrial && !isPro) {
         proModal.onOpen();
         return;
       }
@@ -77,16 +83,12 @@ const PicturePage = () => {
       const response = await sendMessage(values);
       const urls = response.data.map((image) => image.url);
       setPhotos(urls);
-      await increaseApiLimit(args);
+      if (!isPro) {
+        await increaseApiLimit(args);
+      }
     } catch (error: any) {
       console.log(error);
-
-      //   if (error?.response?.status === 403) {
-      //     proModal.onOpen();
-
-      //   } else {
-      //     toast.error("Something went wrong.");
-      //   }
+      toast.error("Something went wrong.");
     } finally {
       router.refresh();
     }

@@ -35,6 +35,8 @@ type MessageProps = {
   role?: string | "user";
 };
 
+const DAY_IN_MS = 86_400_000;
+
 const ChatPage = () => {
   const router = useRouter();
   const proModal = useProModal();
@@ -60,6 +62,10 @@ const ChatPage = () => {
   const increaseApiLimit = useMutation(api.userApiLimit.increaseUserApiLimit);
 
   const checkApiLimit = useQuery(api.userApiLimit.checkUserApiLimit);
+  const data = useQuery(api.userApiLimit.checkSubscription)!;
+
+  const isPro =
+    new Date(data?.stripeCurrentPeriodEnd!)?.getTime() + DAY_IN_MS > Date.now();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -69,7 +75,7 @@ const ChatPage = () => {
 
       const freeTrial = await checkApiLimit;
 
-      if (!freeTrial) {
+      if (!freeTrial && !isPro) {
         proModal.onOpen();
         return;
       }
@@ -91,7 +97,9 @@ const ChatPage = () => {
 
       setMessages(allMessages);
 
-      await increaseApiLimit(args);
+      if (!isPro) {
+        await increaseApiLimit(args);
+      }
 
       form.reset();
     } catch (error: any) {
